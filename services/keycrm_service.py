@@ -1,15 +1,12 @@
 import os
 import re
 from typing import Any, Dict, List, Optional, Tuple
-from dotenv import load_dotenv
 import requests
 import pytz
 from datetime import datetime, timezone
-
-load_dotenv()
+from config import KEYCRM_API_KEY
 
 # === Конфигурация KeyCRM API ===
-KEYCRM_API_KEY = os.getenv("KEYCRM_API_KEY", "your_api_key_here")
 API_COMPANIES_ENDPOINT = "/companies"
 API_CARDS_ENDPOINT = "/pipelines/cards"
 

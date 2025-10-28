@@ -3,8 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from apps_design_interface.gui_runner import BotRunner
 from apps_design_interface.gui_loader import load_logo
-from utils import update_env_variable  # ✅ импортируем твою функцию
-
+from utils import update_env_variable
 
 class DirectBotApp(tk.Tk):
     def __init__(self):
@@ -226,7 +225,7 @@ class DirectBotApp(tk.Tk):
             'Это Instagram-бот, который получает данные из системы KeyCRM,\n'
             'находит соответствующие контакты в Instagram и отправляет им первое сообщение.\n'
             'После этого бот отмечает в KeyCRM, что пользователю уже было отправлено сообщение.\n\n'
-            '⚠️ Важно:\n'
+            '⚠️Важно:\n'
             'Данное приложение может нарушать правила использования платформы Instagram.\n'
             'Используйте его на свой страх и риск. Разработчики не несут ответственности\n'
             'за возможные ограничения или блокировки аккаунтов.'
@@ -235,24 +234,21 @@ class DirectBotApp(tk.Tk):
         about_text_widget.insert("1.0", about_text)
         about_text_widget.config(state="disabled")  # запрет редактирования
 
-    def save_env_settings(self):
-        login = self.login_entry.get().strip()
-        password = self.password_entry.get().strip()
+    def save_auth_settings(self, login, password):
+        """Сохраняем логин и пароль в .env через utils"""
+        login = login.strip()
+        password = password.strip()
 
         if not login or not password:
-            self.status_label.config(text="⚠️ Введите логин и пароль", fg="#c23b22")
+            self.log_message("⚠️ Введите логин и пароль перед сохранением.")
             return
 
         try:
-            # ✅ обновляем данные через utils.update_env_variable
             update_env_variable("INSTAGRAM_USERNAME", login)
             update_env_variable("INSTAGRAM_PASSWORD", password)
-
-            self.status_label.config(text="✅ Данные успешно обновлены", fg="green")
-            self.log_message("🔑 Логин и пароль успешно обновлены в .env")
-
+            self.log_message("✅ Данные успешно обновлены в keyes_data/password_keys_dates.env")
         except Exception as e:
-            self.status_label.config(text=f"❌ Ошибка: {e}", fg="#c23b22")
+            self.log_message(f"❌ Ошибка при сохранении: {e}")
 
     # === FOOTER ===
     def create_footer(self):

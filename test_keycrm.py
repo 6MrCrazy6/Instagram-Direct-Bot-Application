@@ -1,21 +1,13 @@
 import os
 import sys
+from config import KEYCRM_API_KEY, API_BASE_URL
 
-# Добавляем путь к папке services (чтобы можно было импортировать)
 sys.path.append(os.path.join(os.path.dirname(__file__), "services"))
 
 from services.keycrm_service import ApiClient, insta_filter, start_date, end_date
 from services.campaign_manager import CampaignManagerTest
 
 print("🚀 Тест KeyCRM API и CampaignManager\n")
-
-# Проверим, что .env подгрузился
-print("KEYCRM_API_KEY =", os.getenv("KEYCRM_API_KEY"))
-print("API_BASE_URL =", os.getenv("API_BASE_URL"))
-print("-" * 50)
-
-API_BASE_URL: str = os.getenv("API_BASE_URL") or ""
-KEYCRM_API_KEY: str = os.getenv("KEYCRM_API_KEY") or ""
 
 # 1️⃣ Проверяем подключение к KeyCRM напрямую
 client = ApiClient(KEYCRM_API_KEY, API_BASE_URL)
