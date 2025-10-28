@@ -15,6 +15,3 @@ API_COMPANIES_ENDPOINT = os.getenv('API_COMPANIES_ENDPOINT')
 # Files for test from .env files
 LOG_FILE = os.getenv('LOG_FILE')
 EXCEL_FILE = os.getenv('EXCEL_FILE')
-
-# Test message from .env
-MESSAGE_TEMPLATE = os.getenv('MESSAGE_TEMPLATE')

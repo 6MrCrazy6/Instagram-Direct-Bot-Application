@@ -1,5 +1,6 @@
 import time
 import random
+import os
 from logger import log_message
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -61,3 +62,40 @@ def safe_click(driver, element):
         except Exception:
             driver.execute_script("arguments[0].click();", element)
     time.sleep(random.uniform(0.2, 0.6))
+
+def update_env_variable(variable_name, new_value):
+    """Функция для обновления переменной в файле keyes_data/password_keys_dates.env"""
+    try:
+        # Правильный путь к .env файлу
+        env_file = os.path.join(
+            os.path.dirname(__file__),
+            "keyes_data",
+            "password_keys_dates.env"
+        )
+
+        # Проверяем, существует ли файл
+        if not os.path.exists(env_file):
+            raise FileNotFoundError(f"Файл не найден: {env_file}")
+
+        # Читаем существующие строки
+        with open(env_file, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+
+        # Перезаписываем с обновлённым значением
+        with open(env_file, 'w', encoding='utf-8') as file:
+            found = False
+            for line in lines:
+                if line.startswith(f"{variable_name}="):
+                    file.write(f"{variable_name}={new_value}\n")
+                    found = True
+                else:
+                    file.write(line)
+
+            # Если переменной не было — добавляем в конец
+            if not found:
+                file.write(f"{variable_name}={new_value}\n")
+
+        print(f"✅ {variable_name} успешно обновлена в {env_file}")
+
+    except Exception as e:
+        print(f"⚠️ Ошибка при обновлении {variable_name}: {e}")

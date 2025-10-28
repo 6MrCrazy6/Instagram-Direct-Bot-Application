@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from apps_design_interface.gui_runner import BotRunner
 from apps_design_interface.gui_loader import load_logo
+from utils import update_env_variable  # ✅ импортируем твою функцию
+
 
 class DirectBotApp(tk.Tk):
     def __init__(self):
@@ -23,7 +25,7 @@ class DirectBotApp(tk.Tk):
         except Exception as e:
             print(f"[Ошибка загрузки иконки] {e}")
 
-        # 🎨 мягкая нейтральная цветовая палитра
+        # 🎨 Цветовая палитра
         self.bg_color = "#E9E9E9"
         self.panel_color = "#F3F3F3"
         self.text_color = "#2C2C2C"
@@ -35,13 +37,13 @@ class DirectBotApp(tk.Tk):
         self.runner = BotRunner(self.log_message, self.toggle_pause_button)
 
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(2, weight=1)
+        self.rowconfigure(1, weight=1)
 
         self.create_header()
-        self.create_controls()
-        self.create_log_box()
+        self.create_tabs()
         self.create_footer()
 
+    # === HEADER ===
     def create_header(self):
         header = tk.Frame(self, bg=self.bg_color)
         header.grid(row=0, column=0, pady=(15, 5), sticky="n")
@@ -61,9 +63,27 @@ class DirectBotApp(tk.Tk):
             bg=self.bg_color
         ).pack(pady=(5, 10))
 
-    def create_controls(self):
-        controls = tk.Frame(self, bg=self.bg_color)
-        controls.grid(row=1, column=0, pady=10)
+    # === ВКЛАДКИ ===
+    def create_tabs(self):
+        notebook = ttk.Notebook(self)
+        notebook.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+
+        # Главная вкладка
+        main_tab = tk.Frame(notebook, bg=self.bg_color)
+        notebook.add(main_tab, text="Главная")
+
+        # Вкладка Настройки
+        settings_tab = tk.Frame(notebook, bg=self.bg_color)
+        notebook.add(settings_tab, text="Настройки")
+
+        self.create_controls(main_tab)
+        self.create_log_box(main_tab)
+        self.create_settings_tab(settings_tab)
+
+    # === КНОПКИ ===
+    def create_controls(self, parent):
+        controls = tk.Frame(parent, bg=self.bg_color)
+        controls.pack(pady=10)
 
         style = ttk.Style()
         style.theme_use("clam")
@@ -73,9 +93,7 @@ class DirectBotApp(tk.Tk):
             padding=6,
             foreground="white",
             background="#F7931E",
-            borderwidth=0,
-            focusthickness=3,
-            focuscolor="none"
+            borderwidth=0
         )
         style.map(
             "Gravity.TButton",
@@ -83,7 +101,6 @@ class DirectBotApp(tk.Tk):
             foreground=[("disabled", "#999999")]
         )
 
-        # Красная кнопка для выхода
         style.configure(
             "Exit.TButton",
             font=("Segoe UI", 10, "bold"),
@@ -107,9 +124,10 @@ class DirectBotApp(tk.Tk):
         make_button("🧹 Очистить лог", self.clear_log, 2)
         make_button("🚪 Выйти", self.exit_app, 3, style_name="Exit.TButton")
 
-    def create_log_box(self):
-        container = tk.Frame(self, bg=self.bg_color)
-        container.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
+    # === ЛОГ ===
+    def create_log_box(self, parent):
+        container = tk.Frame(parent, bg=self.bg_color)
+        container.pack(fill="both", expand=True, padx=20, pady=10)
         container.rowconfigure(0, weight=1)
         container.columnconfigure(0, weight=1)
 
@@ -135,14 +153,65 @@ class DirectBotApp(tk.Tk):
         self.log_text.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
 
+    # === ВКЛАДКА НАСТРОЕК ===
+    def create_settings_tab(self, parent):
+        frame = tk.LabelFrame(
+            parent, text=" Настройки авторизации ",
+            bg=self.panel_color, fg=self.accent_color,
+            font=("Segoe UI", 10, "bold"), labelanchor="n"
+        )
+        frame.pack(fill="x", padx=20, pady=20)
+
+        tk.Label(frame, text="Логин Instagram:", bg=self.panel_color, font=("Segoe UI", 10)).grid(
+            row=0, column=0, padx=10, pady=5, sticky="w"
+        )
+        self.login_entry = tk.Entry(frame, width=30)
+        self.login_entry.grid(row=0, column=1, padx=10, pady=5)
+
+        tk.Label(frame, text="Пароль Instagram:", bg=self.panel_color, font=("Segoe UI", 10)).grid(
+            row=1, column=0, padx=10, pady=5, sticky="w"
+        )
+        self.password_entry = tk.Entry(frame, width=30, show="*")
+        self.password_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        save_btn = ttk.Button(
+            frame, text="💾 Сохранить изменения",
+            style="Gravity.TButton", command=self.save_env_settings
+        )
+        save_btn.grid(row=2, column=0, columnspan=2, pady=10)
+
+        self.status_label = tk.Label(frame, text="", bg=self.panel_color, fg="#555", font=("Segoe UI", 9))
+        self.status_label.grid(row=3, column=0, columnspan=2, pady=(0, 5))
+
+    def save_env_settings(self):
+        login = self.login_entry.get().strip()
+        password = self.password_entry.get().strip()
+
+        if not login or not password:
+            self.status_label.config(text="⚠️ Введите логин и пароль", fg="#c23b22")
+            return
+
+        try:
+            # ✅ обновляем данные через utils.update_env_variable
+            update_env_variable("INSTAGRAM_USERNAME", login)
+            update_env_variable("INSTAGRAM_PASSWORD", password)
+
+            self.status_label.config(text="✅ Данные успешно обновлены", fg="green")
+            self.log_message("🔑 Логин и пароль успешно обновлены в .env")
+
+        except Exception as e:
+            self.status_label.config(text=f"❌ Ошибка: {e}", fg="#c23b22")
+
+    # === FOOTER ===
     def create_footer(self):
         footer = tk.Label(
             self, text="© 2025 Gravity | v1.0",
             bg=self.bg_color, fg="#666",
             font=("Segoe UI", 9)
         )
-        footer.grid(row=3, column=0, pady=5, sticky="s")
+        footer.grid(row=2, column=0, pady=5, sticky="s")
 
+    # === ПРОЧЕЕ ===
     def log_message(self, text):
         self.log_text.insert(tk.END, text + "\n")
         self.log_text.see(tk.END)
@@ -152,16 +221,13 @@ class DirectBotApp(tk.Tk):
         self.log_message("🧹 Логи очищены.")
 
     def toggle_pause_button(self, paused):
-        self.pause_resume_btn.config(
-            text="▶ Продолжить" if paused else "⏸ Пауза"
-        )
+        self.pause_resume_btn.config(text="▶ Продолжить" if paused else "⏸ Пауза")
 
     def exit_app(self):
-        """Закрывает приложение, при желании закрывает браузер."""
         from tkinter import messagebox
         try:
             if not messagebox.askyesno("Выход", "Вы действительно хотите выйти из приложения?"):
-                return  # пользователь передумал
+                return
 
             self.log_message("🚪 Завершение работы приложения...")
 
@@ -172,10 +238,7 @@ class DirectBotApp(tk.Tk):
 
             driver_ref = getattr(self.runner, "driver", None)
             if driver_ref:
-                close_browser = messagebox.askyesno(
-                    "Закрыть браузер?",
-                    "Хотите также закрыть окно Instagram (браузер)?"
-                )
+                close_browser = messagebox.askyesno("Закрыть браузер?", "Хотите также закрыть окно Instagram (браузер)?")
                 if close_browser:
                     try:
                         driver_ref.quit()
@@ -190,7 +253,7 @@ class DirectBotApp(tk.Tk):
             self.destroy()
             self.quit()
 
-            import os, sys
+            import sys
             os._exit(0)
 
         except Exception as e:

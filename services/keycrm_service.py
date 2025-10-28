@@ -173,10 +173,3 @@ def insta_filter(all_companies: Dict[str, Any]) -> List[Tuple[int, str]]:
                             break  # нашли одну инстаграм-ссылку — этого достаточно
 
     return results
-
-    # print(f"Companies with Instagram: {companies_with_insta}")
-
-    # Uncomment to update companies' SENT_CUSTOM_FIELDS to True after processing
-    # for company_id, instagram_url in companies_with_insta:
-    #     _ = client.put_custom_field(company_id=company_id, uuid=SENT_CUSTOM_FIELDS, field_value=True)
-

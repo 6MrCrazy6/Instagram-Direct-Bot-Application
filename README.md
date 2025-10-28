@@ -1,1 +1,1 @@
-# Instagram-Direct-Bot-Application
+# Instagram Direct Bot Application

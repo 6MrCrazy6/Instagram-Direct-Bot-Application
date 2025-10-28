@@ -65,10 +65,3 @@ class CampaignManagerTest:
             )
             time.sleep(0.3)
 
-
-if __name__ == "__main__":
-    log_message("🚀 Тестовый запуск CampaignManager")
-    manager = CampaignManagerTest()
-    manager.fill_queue_from_keycrm()
-    manager.show_queue()
-    log_message("🏁 Тест завершён.")

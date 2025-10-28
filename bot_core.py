@@ -8,7 +8,7 @@ from logger import log_message
 from utils import random_delay, small_random_delay, random_scroll
 from login_manager import login
 from message_sender import send_message
-from config import MESSAGE_TEMPLATE, EXCEL_FILE
+from config import EXCEL_FILE
 
 
 def check_stop(runner):
