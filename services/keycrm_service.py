@@ -4,16 +4,15 @@ from typing import Any, Dict, List, Optional, Tuple
 import requests
 import pytz
 from datetime import datetime, timezone
-from config import KEYCRM_API_KEY
+from config import KEYCRM_API_KEY, API_BASE_URL, API_CARDS_ENDPOINT
 
-# === Конфигурация KeyCRM API ===
-API_COMPANIES_ENDPOINT = "/companies"
-API_CARDS_ENDPOINT = "/pipelines/cards"
 
 # UUID кастомных полей
 SOCIAL_MEDIAS_CUSTOM_FIELDS = "CY_1039"
 SENT_CUSTOM_FIELDS = "CY_1071"
+TYPE_PROFFESSIONS = "CY_1015"
 
+# Таймаут для запросов
 TIMEOUT = 30
 
 # Регулярное выражение для поиска ссылок на Instagram (захватывает username)
@@ -27,7 +26,6 @@ today = datetime.now(KYIV_TZ).strftime("%Y-%m-%d")
 end_date = datetime.strptime(today, "%Y-%m-%d").strftime("%Y-%m-%d")
 start_date = "2025-10-27"
 
-
 class ApiClient:
     """Простой клиент KeyCRM, используемый в этом скрипте.
 
@@ -35,14 +33,14 @@ class ApiClient:
     - fetch_all_companies: собирает компании с пагинацией
     - put_custom_field: обновляет кастомное поле у компании
     """
-
-    def __init__(self, KEYCRM_API_KEY: str, API_BASE_URL: str) -> None:
-        self.base_url: str = API_BASE_URL
-        self.api_key: str = KEYCRM_API_KEY
+    def __init__(self) -> None:
+        self.base_url: str = API_BASE_URL or ""
+        self.api_key: Optional[str] = KEYCRM_API_KEY
         self.headers: Dict[str, str] = {
-            "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
+        if self.api_key:
+            self.headers["Authorization"] = f"Bearer {self.api_key}"
 
     def fetch_all_companies(
         self,
@@ -253,7 +251,7 @@ def insta_filter(
         # Получаем основной вид деятельности
         type_professions: List[str] = [""]
         for f in custom_fields:
-            if f.get("uuid") == "CY_1015":
+            if f.get("uuid") == TYPE_PROFFESSIONS:
                 value = f.get("value")
                 if isinstance(value, list) and value:
                     type_professions = [str(value[0])]

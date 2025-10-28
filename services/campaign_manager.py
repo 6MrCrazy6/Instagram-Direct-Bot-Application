@@ -21,7 +21,7 @@ except Exception:
 
 class CampaignManagerTest:
     def __init__(self):
-        self.client = ApiClient(str(os.getenv("KEYCRM_API_KEY")), str(os.getenv("API_BASE_URL")))
+        self.client = ApiClient()
         self.queue = queue.Queue()
         pipeline_ids = [1, 3, 16, 20, 31, 2, 4, 15, 19, 32, 22, 24, 26, 30, 33, 46, 18]
         self.pipeline_ids = pipeline_ids

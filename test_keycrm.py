@@ -1,6 +1,5 @@
 import os
 import sys
-from config import KEYCRM_API_KEY, API_BASE_URL
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "services"))
 
@@ -10,7 +9,7 @@ from services.campaign_manager import CampaignManagerTest
 print("🚀 Тест KeyCRM API и CampaignManager\n")
 
 # 1️⃣ Проверяем подключение к KeyCRM напрямую
-client = ApiClient(KEYCRM_API_KEY, API_BASE_URL)
+client = ApiClient()
 pipeline_ids = [1, 3, 16, 20, 31, 2, 4, 15, 19, 32, 22, 24, 26, 30, 33, 46, 18]
 cards = client.fetch_all_pipeline_cards(pipeline_ids, date=(start_date, end_date), include="contact.client")
 
@@ -18,7 +17,6 @@ if not cards:
     cards = []
 
 companies = client.fetch_all_companies(date=(start_date, end_date), include="custom_fields")
-
 
 # if data.get("error"):
 #     print("❌ Ошибка подключения к KeyCRM:", data["message"])

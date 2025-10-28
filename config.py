@@ -11,6 +11,7 @@ INSTAGRAM_PASSWORD = os.getenv('INSTAGRAM_PASSWORD')
 KEYCRM_API_KEY = os.getenv('KEYCRM_API_KEY')
 API_BASE_URL = os.getenv('API_BASE_URL')
 API_COMPANIES_ENDPOINT = os.getenv('API_COMPANIES_ENDPOINT')
+API_CARDS_ENDPOINT = os.getenv('API_CARDS_ENDPOINT')
 
 # Files for test from .env files
 LOG_FILE = os.getenv('LOG_FILE')
