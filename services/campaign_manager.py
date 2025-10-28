@@ -1,7 +1,8 @@
+import os
 import re
 import queue
 import time
-from services.keycrm_service import ApiClient, insta_filter
+from services.keycrm_service import ApiClient, insta_filter, start_date, end_date
 
 # 🔹 Безопасный импорт логгера
 try:
@@ -20,30 +21,41 @@ except Exception:
 
 class CampaignManagerTest:
     def __init__(self):
-        self.client = ApiClient()
+        self.client = ApiClient(str(os.getenv("KEYCRM_API_KEY")), str(os.getenv("API_BASE_URL")))
         self.queue = queue.Queue()
+        pipeline_ids = [1, 3, 16, 20, 31, 2, 4, 15, 19, 32, 22, 24, 26, 30, 33, 46, 18]
+        self.pipeline_ids = pipeline_ids
 
     def fill_queue_from_keycrm(self):
         """Получает все компании с Instagram и кладёт их в очередь"""
         log_message("🔄 Получаю данные из KeyCRM...")
-        result = self.client.fetch_all_companies(include="custom_fields")
+        cards = self.client.fetch_all_pipeline_cards(self.pipeline_ids, date=(start_date, end_date), include="contact.client")
+        companies = self.client.fetch_all_companies(date=(start_date, end_date), include="custom_fields")
 
-        if result.get("error"):
-            log_message(f"❌ Ошибка: {result['message']}")
+        if companies.get("error"):
+            log_message(f"❌ Ошибка: {companies['message']}")
             return
 
-        contacts = insta_filter(result)
+        # Защититься от None или ошибочных ответов при получении карточек — приводим к списку
+        if not isinstance(cards, list):
+            if isinstance(cards, dict) and cards.get("error"):
+                log_message(f"❌ Ошибка при получении карточек: {cards.get('message')}")
+            else:
+                log_message("⚠️ Карточки не получены — используем пустой список карточек.")
+            cards = []
 
-        for company_id, company_name, type_professions, insta_link in contacts:
-            username_match = re.search(r"instagram\.com/([A-Za-z0-9_.]+)", insta_link)
+        contacts = insta_filter(companies, cards, self.pipeline_ids)
+        for company_id, name, category, type_professions, link in contacts:
+            username_match = re.search(r"instagram\.com/([A-Za-z0-9_.]+)", link)
             if username_match:
                 username = username_match.group(1)
                 self.queue.put({
                     "company_id": company_id,
-                    "company_name": company_name,
+                    "company_name": name,
+                    "category": category,
                     "type_professions": type_professions,
                     "username": username,
-                    "link": insta_link
+                    "link": link
                 })
 
         log_message(f"✅ В очередь добавлено {self.queue.qsize()} контактов")
@@ -60,6 +72,7 @@ class CampaignManagerTest:
             print(
                 f" → ID: {item['company_id']} | "
                 f"{item['company_name']} | "
+                f"{item['category']} | "
                 f"{item['type_professions']} | "
                 f"Instagram: @{item['username']} ({item['link']})"
             )
