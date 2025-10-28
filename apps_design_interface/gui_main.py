@@ -155,33 +155,85 @@ class DirectBotApp(tk.Tk):
 
     # === ВКЛАДКА НАСТРОЕК ===
     def create_settings_tab(self, parent):
+        # === Блок авторизации ===
         frame = tk.LabelFrame(
-            parent, text=" Настройки авторизации ",
-            bg=self.panel_color, fg=self.accent_color,
-            font=("Segoe UI", 10, "bold"), labelanchor="n"
+            parent,
+            text=" Настройки авторизации ",
+            bg=self.panel_color,
+            fg=self.accent_color,
+            font=("Segoe UI", 10, "bold"),
+            labelanchor="n"
         )
         frame.pack(fill="x", padx=20, pady=20)
 
-        tk.Label(frame, text="Логин Instagram:", bg=self.panel_color, font=("Segoe UI", 10)).grid(
-            row=0, column=0, padx=10, pady=5, sticky="w"
-        )
-        self.login_entry = tk.Entry(frame, width=30)
-        self.login_entry.grid(row=0, column=1, padx=10, pady=5)
+        # Поля для логина и пароля
+        tk.Label(frame, text="Логин:", bg=self.panel_color, font=("Segoe UI", 10)).grid(row=0, column=0, padx=10,
+                                                                                        pady=5, sticky="e")
+        login_entry = tk.Entry(frame, width=30)
+        login_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        tk.Label(frame, text="Пароль Instagram:", bg=self.panel_color, font=("Segoe UI", 10)).grid(
-            row=1, column=0, padx=10, pady=5, sticky="w"
-        )
-        self.password_entry = tk.Entry(frame, width=30, show="*")
-        self.password_entry.grid(row=1, column=1, padx=10, pady=5)
+        tk.Label(frame, text="Пароль:", bg=self.panel_color, font=("Segoe UI", 10)).grid(row=1, column=0, padx=10,
+                                                                                         pady=5, sticky="e")
+        password_entry = tk.Entry(frame, width=30, show="*")
+        password_entry.grid(row=1, column=1, padx=10, pady=5)
 
-        save_btn = ttk.Button(
-            frame, text="💾 Сохранить изменения",
-            style="Gravity.TButton", command=self.save_env_settings
+        # Кнопка "Сохранить"
+        save_button = tk.Button(
+            frame,
+            text="💾 Сохранить",
+            bg=self.accent_color,
+            fg="white",
+            font=("Segoe UI", 10, "bold"),
+            relief="flat",
+            width=15,
+            command=lambda: self.save_auth_settings(login_entry.get(), password_entry.get())
         )
-        save_btn.grid(row=2, column=0, columnspan=2, pady=10)
+        save_button.grid(row=2, column=0, columnspan=2, pady=(10, 5))
 
-        self.status_label = tk.Label(frame, text="", bg=self.panel_color, fg="#555", font=("Segoe UI", 9))
-        self.status_label.grid(row=3, column=0, columnspan=2, pady=(0, 5))
+        # === Блок "О программе" ===
+        about_frame = tk.LabelFrame(
+            parent,
+            text=" О программе ",
+            bg=self.panel_color,
+            fg=self.accent_color,
+            font=("Segoe UI", 10, "bold"),
+            labelanchor="n"
+        )
+        about_frame.pack(fill="both", expand=True, padx=20, pady=(10, 20))
+
+        # Текст с прокруткой
+        text_container = tk.Frame(about_frame, bg=self.panel_color)
+        text_container.pack(fill="both", expand=True, padx=10, pady=10)
+
+        scrollbar = ttk.Scrollbar(text_container, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
+
+        about_text_widget = tk.Text(
+            text_container,
+            wrap="word",
+            bg=self.panel_color,
+            fg=self.text_color,
+            font=("Segoe UI", 9),
+            relief="flat",
+            height=10,
+            yscrollcommand=scrollbar.set
+        )
+        about_text_widget.pack(fill="both", expand=True)
+        scrollbar.config(command=about_text_widget.yview)
+
+        about_text = (
+            'Данное приложение создано для компании "Gravity Smart Home".\n\n'
+            'Это Instagram-бот, который получает данные из системы KeyCRM,\n'
+            'находит соответствующие контакты в Instagram и отправляет им первое сообщение.\n'
+            'После этого бот отмечает в KeyCRM, что пользователю уже было отправлено сообщение.\n\n'
+            '⚠️ Важно:\n'
+            'Данное приложение может нарушать правила использования платформы Instagram.\n'
+            'Используйте его на свой страх и риск. Разработчики не несут ответственности\n'
+            'за возможные ограничения или блокировки аккаунтов.'
+        )
+
+        about_text_widget.insert("1.0", about_text)
+        about_text_widget.config(state="disabled")  # запрет редактирования
 
     def save_env_settings(self):
         login = self.login_entry.get().strip()

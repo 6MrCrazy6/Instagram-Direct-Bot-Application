@@ -91,7 +91,6 @@ def update_env_variable(variable_name, new_value):
                 else:
                     file.write(line)
 
-            # Если переменной не было — добавляем в конец
             if not found:
                 file.write(f"{variable_name}={new_value}\n")
 
