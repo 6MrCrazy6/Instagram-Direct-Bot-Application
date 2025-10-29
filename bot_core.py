@@ -41,7 +41,7 @@ def ensure_online(driver):
 
 
 def run_bot(runner=None):
-    """Основна логіка Instagram Direct Bot — працює з будь-якою версією Chrome."""
+    """Основная логика Instagram Direct Bot — працює з будь-якою версією Chrome."""
     log_message("=" * 60)
     log_message("🚀 Запуск Instagram Auto-Messenger")
     log_message("=" * 60)
@@ -53,17 +53,14 @@ def run_bot(runner=None):
     options.add_argument("--disable-notifications")
     options.add_argument("--disable-infobars")
 
-    try:
-        driver = uc.Chrome(options=options)
-        if runner:
-            runner.driver = driver
-        log_message("✓ Запущено undetected ChromeDriver (підтримує будь-яку версію Chrome).")
-    except Exception as e:
-        log_message(f"❌ Не вдалося запустити браузер: {e}")
-        return
+    driver = uc.Chrome(options=options)
+    runner.driver = driver
+    if runner:
+        runner.driver = driver
+    log_message("✓ Запущено undetected ChromeDriver (підтримує будь-яку версію Chrome).")
 
     try:
-        # === Авторизація ===
+        # Авторизация в Instagram
         if not login(driver, runner):
             log_message("✗ Не вдалося увійти. Завершення роботи.")
             return
@@ -71,7 +68,7 @@ def run_bot(runner=None):
         random_delay(5, 10)
         random_scroll(driver)
 
-        # === Отримуємо контакти з KeyCRM ===
+        # Получаем контакты из KeyCRM
         log_message("🔄 Отримання даних із KeyCRM...")
         campaign_manager = CampaignManagerTest()
         campaign_manager.fill_queue_from_keycrm()
@@ -85,7 +82,7 @@ def run_bot(runner=None):
 
         success, fail, sent_total = 0, 0, 0
 
-        # === Головний цикл розсилки ===
+        # Основной цикл рассылки
         while not queue.empty():
             check_stop(runner)
             contact = queue.get()
@@ -94,8 +91,9 @@ def run_bot(runner=None):
             category = contact["category"]
             type_professions = contact["type_professions"]
 
-            # Отримуємо повідомлення за категорією
+            # Получаем сообщение для отправки
             message = get_message_by_category_or_profession(category, type_professions)
+
             if not message:
                 log_message(f"⚠️ Пропущено @{username} — немає відповідного повідомлення.")
                 continue
@@ -104,7 +102,7 @@ def run_bot(runner=None):
             ensure_online(driver)
 
             try:
-                # Передаем только username и message
+                # Отправляем сообщение
                 if send_message(driver, username, message, runner):
                     success += 1
                     sent_total += 1
@@ -117,12 +115,12 @@ def run_bot(runner=None):
                 log_message(f"⚠️ Помилка при відправці до @{username}: {e}")
                 fail += 1
 
-            # Імітація людської поведінки
+            # Имитируем прокрутку (человеческое поведение)
             if random.random() < 0.3:
                 random_scroll(driver)
                 log_message("🌀 Імітація прокрутки (людська поведінка).")
 
-            # Затримка перед наступним повідомленням
+            # Задержка перед следующими сообщениями
             delay = random.uniform(25, 75)
             log_message(f"⌛ Затримка перед наступним повідомленням: {delay:.1f} сек.")
             for _ in range(int(delay * 5)):

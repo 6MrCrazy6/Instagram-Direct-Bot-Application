@@ -11,6 +11,10 @@ from utils import human_type, safe_click, small_random_delay
 def send_message(driver, username, message, runner=None):
     """Відправка повідомлення користувачу (з реалістичною поведінкою людини + пауза/відновлення)"""
     log_message(f"Спроба надіслати повідомлення до @{username}")
+
+    # Логируем, какое сообщение собирается отправить
+    log_message(f"⏳ Повідомлення, яке буде надіслано до @{username}: {message}")
+
     wait = WebDriverWait(driver, 45)
 
     # === Расширенная check_pause, как в login_manager ===
