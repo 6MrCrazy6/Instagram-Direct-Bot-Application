@@ -4,6 +4,7 @@ from tkinter import ttk
 from apps_design_interface.gui_runner import BotRunner
 from apps_design_interface.gui_loader import load_logo
 from utils import update_env_variable
+from logger import set_gui_logger
 
 class DirectBotApp(tk.Tk):
     def __init__(self):
@@ -32,6 +33,8 @@ class DirectBotApp(tk.Tk):
         self.log_bg = "#FFFFFF"
         self.log_fg = "#222222"
         self.configure(bg=self.bg_color)
+
+        set_gui_logger(self.log_message)
 
         self.runner = BotRunner(self.log_message, self.toggle_pause_button)
 

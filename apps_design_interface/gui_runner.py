@@ -1,4 +1,5 @@
 import threading
+
 import bot_core
 from logger import set_gui_logger
 
@@ -26,7 +27,8 @@ class BotRunner:
 
     def run_bot(self):
         try:
-            bot_core.run_bot(self)
+            # Запуск основной логики бота
+            bot_core.run_bot(self)  # Запускаем основную логику бота (рассылка)
         except Exception as e:
             self.log_callback(f"❌ Ошибка: {e}")
         finally:

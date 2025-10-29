@@ -1,8 +1,8 @@
-import os
 import re
 import queue
 import time
 from services.keycrm_service import ApiClient, insta_filter, start_date, end_date
+from utils import check_empty_fields_and_filter
 
 # 🔹 Безопасный импорт логгера
 try:
@@ -45,7 +45,9 @@ class CampaignManagerTest:
             cards = []
 
         contacts = insta_filter(companies, cards, self.pipeline_ids)
-        for company_id, name, category, type_professions, link in contacts:
+        valid_contacts = check_empty_fields_and_filter(contacts)
+
+        for company_id, name, category, type_professions, link in valid_contacts:
             username_match = re.search(r"instagram\.com/([A-Za-z0-9_.]+)", link)
             if username_match:
                 username = username_match.group(1)
@@ -77,4 +79,3 @@ class CampaignManagerTest:
                 f"Instagram: @{item['username']} ({item['link']})"
             )
             time.sleep(0.3)
-

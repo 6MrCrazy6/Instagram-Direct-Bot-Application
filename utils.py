@@ -98,3 +98,60 @@ def update_env_variable(variable_name, new_value):
 
     except Exception as e:
         print(f"⚠️ Ошибка при обновлении {variable_name}: {e}")
+
+def check_empty_fields_and_filter(contacts):
+    """
+    Проверяет контакты на пустые категории и виды деятельности, фильтрует некорректные контакты.
+
+    Parameters:
+    contacts (list): Список контактов для проверки
+
+    Returns:
+    list: Список контактов без пустых категорий и видов деятельности
+    """
+    valid_contacts = []
+
+    for contact in contacts:
+        company_id, name, category, type_professions, link = contact
+
+        # Проверяем, что хотя бы одно из полей заполнено (категория или тип профессии)
+        if not category and not any(type_professions):
+            log_message(f"⚠️ Пустое поле 'Категория' и 'Вид діяльності' у компании {name} (ID: {company_id})")
+            continue  # Переход к следующему контакту
+
+        valid_contacts.append(contact)
+
+    return valid_contacts
+
+
+def get_message_by_category_or_profession(category: str, type_professions: list) -> str:
+    """
+    Определяет, какое сообщение отправить в зависимости от категории или типа профессии.
+
+    Parameters:
+    category (str): Категория компании (например, 'Архітектори', 'Електрики')
+    type_professions (list): Список типов профессий, которые могут быть указаны в кастомных полях компании
+
+    Returns:
+    str: Сообщение, которое нужно отправить пользователю, или None, если подходящего сообщения нет
+    """
+
+    profession_messages = {
+        "Архітектори": "Вітаю! Ви більше проектуєте житлові об’єкти чи комерційні простори?",
+        "Електрики": "Вітаю! Підкажіть, ви більше працюєте на квартирах чи приватних будинках?",
+        "Дизайнери": "Вітаю! Ви зараз більше робите проєкти для житла чи комерційних просторів?",
+        "Будівельники": "Вітаю! Підкажіть, ви більше займаєтесь квартирами чи приватними будинками?",
+        "Ріелтори": "Вітаю! Ви більше працюєте з житловими комплексами чи окремими квартирами?",
+    }
+
+    # Если категория есть в словаре профессий, то отправляем соответствующее сообщение
+    if category in profession_messages:
+        return profession_messages[category]
+
+    # Если категория не найдена, проверяем по типу профессии
+    for profession in type_professions:
+        if profession in profession_messages:
+            return profession_messages[profession]
+
+    # Если подходящего сообщения нет
+    return None
