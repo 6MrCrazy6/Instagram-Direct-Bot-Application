@@ -1,57 +1,57 @@
 # Gravity — Instagram Direct Bot 🚀
 
-Автоматизированное решение для рассылки сообщений в Instagram Direct с интеграцией **KeyCRM**. Бот извлекает контакты из вашей CRM-системы, находит их в Instagram и отправляет персонализированные сообщения, используя эмуляцию поведения реального пользователя.
+An automated solution for sending Instagram Direct messages with **KeyCRM** integration. The bot extracts contacts from your CRM system, finds them on Instagram, and sends personalized messages using human-like behavior emulation.
 
 ---
 
-## 🌟 Основные возможности
+## 🌟 Key Features
 
-- **Интеграция с KeyCRM**: Автоматический сбор контактов (Instagram-аккаунтов) из воронки продаж KeyCRM.
-- **Умная фильтрация**: Бот обрабатывает только валидные контакты с заполненными ссылками на Instagram.
-- **Эмуляция человека**: Использование `undetected-chromedriver` и функций "человеческого" набора текста для минимизации рисков блокировки.
-- **Графический интерфейс (GUI)**: Удобное управление через окно приложения (запуск, пауза, логирование, настройки).
-- **Система логирования**: Подробный отчет о каждом действии бота в реальном времени и сохранение логов в файл.
-- **Гибкие настройки**: Возможность смены аккаунта Instagram и API-ключей прямо через интерфейс.
-
----
-
-## 🛠 Технологический стек
-
-- **Язык**: Python 3.10+
-- **Библиотеки**: 
-  - `Selenium` + `undetected-chromedriver` (автоматизация браузера)
-  - `Tkinter` (графический интерфейс)
-  - `Requests` (взаимодействие с KeyCRM API)
-  - `Pandas` (обработка данных)
-  - `Python-dotenv` (управление конфигурацией)
+- **KeyCRM Integration**: Automatically collect contacts (Instagram accounts) from the KeyCRM sales funnel.
+- **Smart Filtering**: The bot processes only valid contacts with provided Instagram links.
+- **Human Emulation**: Utilizes `undetected-chromedriver` and "human-like" typing functions to minimize the risk of account restrictions.
+- **Graphical User Interface (GUI)**: User-friendly application window for management (start, pause, logging, settings).
+- **Logging System**: Real-time reporting of every bot action, with logs saved to a local file.
+- **Flexible Settings**: Change Instagram accounts and API keys directly through the interface.
 
 ---
 
-## 📂 Структура проекта
+## 🛠 Tech Stack
+
+- **Language**: Python 3.10+
+- **Libraries**: 
+  - `Selenium` + `undetected-chromedriver` (browser automation)
+  - `Tkinter` (graphical interface)
+  - `Requests` (KeyCRM API interaction)
+  - `Pandas` (data processing)
+  - `Python-dotenv` (configuration management)
+
+---
+
+## 📂 Project Structure
 
 ```text
-├── apps_design_interface/  # Графический интерфейс (Tkinter)
-│   ├── assets/             # Логотипы и иконки
-│   └── gui_main.py         # Главное окно приложения
-├── services/               # Бизнес-логика
-│   ├── campaign_manager.py # Управление очередью и данными из CRM
-│   └── keycrm_service.py   # Клиент для KeyCRM API
-├── keyes_data/             # Конфиденциальные данные
-│   └── password_keys_dates.env # Настройки (логины, пароли, API-ключи)
-├── main.py                 # Точка входа в приложение
-├── bot_core.py             # Ядро управления браузером
-├── message_sender.py       # Логика отправки сообщений в Direct
-├── logger.py               # Система логирования
-├── utils.py                # Вспомогательные функции
-└── requirements.txt        # Список зависимостей
+├── apps_design_interface/  # Graphical User Interface (Tkinter)
+│   ├── assets/             # Logos and icons
+│   └── gui_main.py         # Main application window
+├── services/               # Business logic
+│   ├── campaign_manager.py # Queue and CRM data management
+│   └── keycrm_service.py   # KeyCRM API client
+├── keyes_data/             # Sensitive data
+│   └── password_keys_dates.env # Settings (logins, passwords, API keys)
+├── main.py                 # Application entry point
+├── bot_core.py             # Browser control core
+├── message_sender.py       # Direct message sending logic
+├── logger.py               # Logging system
+├── utils.py                # Helper functions
+└── requirements.txt        # List of dependencies
 ```
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### 1. Подготовка окружения
-Убедитесь, что у вас установлен Python 3.10 или выше. Склонируйте репозиторий и установите зависимости:
+### 1. Environment Setup
+Ensure you have Python 3.10 or higher installed. Clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/6MrCrazy6/Instagram-Direct-Bot-Application.git
@@ -59,17 +59,17 @@ cd Instagram-Direct-Bot-Application
 pip install -r requirements.txt
 ```
 
-### 2. Настройка конфигурации
-Перейдите в папку `keyes_data` и настройте файл `password_keys_dates.env`. Вы можете сделать это вручную или через интерфейс приложения во вкладке "Настройки".
+### 2. Configuration
+Navigate to the `keyes_data` folder and configure the `password_keys_dates.env` file. You can do this manually or via the "Settings" tab in the application.
 
-Основные параметры:
-- `INSTAGRAM_USERNAME`: Ваш логин Instagram.
-- `INSTAGRAM_PASSWORD`: Ваш пароль Instagram.
-- `KEYCRM_API_KEY`: API ключ от вашей KeyCRM.
-- `API_BASE_URL`: Базовый URL API KeyCRM.
+Key parameters:
+- `INSTAGRAM_USERNAME`: Your Instagram login.
+- `INSTAGRAM_PASSWORD`: Your Instagram password.
+- `KEYCRM_API_KEY`: Your KeyCRM API key.
+- `API_BASE_URL`: KeyCRM API base URL.
 
-### 3. Запуск
-Запустите основной файл:
+### 3. Launch
+Run the main script:
 
 ```bash
 python main.py
@@ -77,24 +77,52 @@ python main.py
 
 ---
 
-## 🖥 Использование
+## 🖥 Usage
 
-1. **Авторизация**: При первом запуске бот откроет окно браузера для входа в Instagram. Рекомендуется пройти авторизацию вручную, если бот не сделает это автоматически.
-2. **Запуск**: Нажмите кнопку **"▶ Запустить рассылку"**. Бот сначала загрузит данные из KeyCRM, а затем начнет поочередную отправку сообщений.
-3. **Пауза**: В любой момент можно приостановить работу кнопкой **"⏸ Пауза"**.
-4. **Логи**: В центральном окне отображается текущий статус работы (успешные отправки, ошибки, задержки).
-
----
-
-## ⚠️ Дисклеймер (Отказ от ответственности)
-
-Данное приложение создано для автоматизации рабочих процессов компании "Gravity Smart Home". 
-
-**Важно:** Использование средств автоматизации в Instagram может нарушать Условия использования платформы. Разработчики не несут ответственности за возможные ограничения или блокировки ваших аккаунтов. Используйте приложение на свой страх и риск.
+1. **Authorization**: On the first run, the bot will open a browser window for Instagram login. It is recommended to log in manually if the bot doesn't do it automatically.
+2. **Start**: Click the **"▶ Start Campaign"** button. The bot will load data from KeyCRM and begin sending messages sequentially.
+3. **Pause**: You can pause the operation at any time using the **"⏸ Pause"** button.
+4. **Logs**: The central window displays the current status (successful sends, errors, delays).
 
 ---
 
-## 🤝 Разработка
+## ⚠️ Disclaimer
 
-Автор: [6MrCrazy6](https://github.com/6MrCrazy6)
-Проект разработан для внутреннего использования в компании **Gravity**.
+This application was created to automate workflows for **Gravity Smart Home**.
+
+**Important:** Using automation tools on Instagram may violate the platform's Terms of Service. The developers are not responsible for any account restrictions or bans. Use this application at your own risk.
+
+---
+
+## ⚖️ License
+
+This project is licensed under the **MIT License**.
+
+```text
+Copyright (c) 2025 6MrCrazy6
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 🤝 Development
+
+Author: [6MrCrazy6](https://github.com/6MrCrazy6)
+Developed for internal use at **Gravity**.
